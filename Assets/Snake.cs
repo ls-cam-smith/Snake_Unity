@@ -20,9 +20,6 @@ public class Snake : MonoBehaviour
     private void Start() {
         _segments = new List<Transform>();
         ResetState();
-
-        // InvokeRepeating(nameof(TimedUpdate), 0.0f, updateFreqS);
-        // CancelInvoke(nameof(TimedUpdate));
     }
 
     void Update() {
@@ -44,18 +41,20 @@ public class Snake : MonoBehaviour
         if (gameState.state != GameStates.Playing){
             return;
         }
+        Transform nextSegment = Instantiate(this.segmentPrefab);
+        nextSegment.transform.position = this.transform.position;
 
         Vector2 next_facing;
         if (_input_buffer.TryDequeue(out next_facing)) {
             _facing = next_facing;
         }
-
-        Transform nextSegment = Instantiate(this.segmentPrefab);
-        nextSegment.transform.position = this.transform.position;
+        float nextX = Mathf.Round(this.transform.position.x) + _facing.x;
+        float nextY = Mathf.Round(this.transform.position.y) + _facing.y;
+        (nextX, nextY) = CoerceToGrid(nextX, nextY);
 
         transform.position = new Vector3(
-            Mathf.Round(this.transform.position.x) + _facing.x,
-            Mathf.Round(this.transform.position.y) + _facing.y,
+            nextX,
+            nextY,
             0
         );
 
@@ -65,7 +64,7 @@ public class Snake : MonoBehaviour
         Destroy(lastSegment.gameObject);
     }
 
-    public void Grow() {
+    private void Grow() {
         Transform segment = Instantiate(this.segmentPrefab);
         if (_segments.Count > 0) {
             segment.position = _segments[_segments.Count - 1].position;
@@ -73,6 +72,27 @@ public class Snake : MonoBehaviour
             segment.position = this.transform.position;
         }
         _segments.Add(segment);
+    }
+
+    private (float, float) CoerceToGrid(float x, float y)
+    {
+        if (x < gridArea.bounds.min.x)
+        {
+            x = Mathf.Floor(gridArea.bounds.max.x);
+        }
+        if (gridArea.bounds.max.x < x)
+        {
+            x = Mathf.Floor(gridArea.bounds.min.x);
+        }
+        if (y < gridArea.bounds.min.y)
+        {
+            y = Mathf.Floor(gridArea.bounds.max.y);
+        }
+        if (gridArea.bounds.max.y < y)
+        {
+            y = Mathf.Floor(gridArea.bounds.min.y);
+        }
+        return (x, y);
     }
 
     private void ResetState() {
@@ -91,7 +111,12 @@ public class Snake : MonoBehaviour
 
     private void OnTriggerEnter2D (Collider2D other)
     {
-        switch (other.tag)
+        if (gameState.state != GameStates.Playing)
+        {
+            return;
+        }
+
+            switch (other.tag)
         {
             default:
                 break;
@@ -101,48 +126,10 @@ public class Snake : MonoBehaviour
                 gameState.IncrementScore();
                 break;
             case "Obstacle":
-                if (gameState.state == GameStates.Playing){ deathSound.Play(); }
+                   deathSound.Play();
                 gameState.Stop();
                 ResetState();
                 break;
-            case "WallTop":
-                transform.position = new Vector3(
-                    transform.position.x,
-                    gridArea.bounds.min.y - 1,
-                    0
-                );
-                break;
-            case "WallBottom":
-                transform.position = new Vector3(
-                    transform.position.x,
-                   gridArea.bounds.max.y + 1,
-                    0
-                );
-                break;
-            case "WallLeft":
-                transform.position = new Vector3(
-                   gridArea.bounds.max.x + 1,
-                    transform.position.y,
-                    0
-                );
-                break;
-            case "WallRight":
-                transform.position = new Vector3(
-                    gridArea.bounds.min.x - 1, 
-                    transform.position.y,
-                    0
-                );
-                break;
         }
-
-        // if (other.tag == "Food") {
-        //     Grow();
-        //     gameState.IncrementScore();
-
-        // } else if (other.tag == "Obstacle") {
-        //     deathSound.Play();
-        //     gameState.Stop();
-        //     ResetState();
-        // }
     }
 }
