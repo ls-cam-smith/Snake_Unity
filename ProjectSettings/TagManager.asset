@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Food
   - Obstacle
+  - WallTop
+  - WallBottom
+  - WallLeft
+  - WallRight
   layers:
   - Default
   - TransparentFX

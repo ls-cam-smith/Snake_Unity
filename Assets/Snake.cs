@@ -89,15 +89,60 @@ public class Snake : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D (Collider2D other) {
-        if (other.tag == "Food") {
-            Grow();
-            gameState.IncrementScore();
+    private void OnTriggerEnter2D (Collider2D other)
+    {
+        switch (other.tag)
+        {
+            default:
+                break;
 
-        } else if (other.tag == "Obstacle") {
-            deathSound.Play();
-            gameState.Stop();
-            ResetState();
+            case "Food":
+                Grow();
+                gameState.IncrementScore();
+                break;
+            case "Obstacle":
+                if (gameState.state == GameStates.Playing){ deathSound.Play(); }
+                gameState.Stop();
+                ResetState();
+                break;
+            case "WallTop":
+                transform.position = new Vector3(
+                    transform.position.x,
+                    gridArea.bounds.min.y - 1,
+                    0
+                );
+                break;
+            case "WallBottom":
+                transform.position = new Vector3(
+                    transform.position.x,
+                   gridArea.bounds.max.y + 1,
+                    0
+                );
+                break;
+            case "WallLeft":
+                transform.position = new Vector3(
+                   gridArea.bounds.max.x + 1,
+                    transform.position.y,
+                    0
+                );
+                break;
+            case "WallRight":
+                transform.position = new Vector3(
+                    gridArea.bounds.min.x - 1, 
+                    transform.position.y,
+                    0
+                );
+                break;
         }
+
+        // if (other.tag == "Food") {
+        //     Grow();
+        //     gameState.IncrementScore();
+
+        // } else if (other.tag == "Obstacle") {
+        //     deathSound.Play();
+        //     gameState.Stop();
+        //     ResetState();
+        // }
     }
 }
