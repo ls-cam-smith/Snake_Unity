@@ -23,6 +23,11 @@ public class Snake : MonoBehaviour
     }
 
     void Update() {
+        if (gameState.state != GameStates.Playing)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown (KeyCode.UpArrow) && _facing != Vector2.down) {
             _input_buffer.Enqueue(Vector2.up);
         }
