@@ -12,13 +12,14 @@ public enum GameStates {
 public class GameState : MonoBehaviour
 {
     public GameStates state = GameStates.Stopped;
-    public GameObject snake;
+    public Snake snake;
     public int score = 0;
 
     public TextMeshProUGUI textMesh;
 
     public void Update() {
         if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Stopped) {
+            snake.ResetState();
             state = GameStates.Playing;
         } else if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Playing) {
             state = GameStates.Paused;

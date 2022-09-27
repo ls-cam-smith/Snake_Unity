@@ -204,7 +204,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45348043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 4, z: 2}
+  m_LocalPosition: {x: 4, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -548,8 +548,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 978283259}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 621609276}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -703,6 +703,7 @@ Transform:
   - {fileID: 1829280558}
   - {fileID: 1080808329}
   - {fileID: 262790400}
+  - {fileID: 281232694}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -806,6 +807,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridArea: {fileID: 988781910}
+  foodCollider: {fileID: 829301203}
   beep: {fileID: 829301204}
 --- !u!61 &829301203
 BoxCollider2D:
@@ -964,7 +966,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -221.6, y: 430.4}
+  m_AnchoredPosition: {x: -354, y: 337}
   m_SizeDelta: {x: 311.41, y: 46.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &978283260
@@ -1263,7 +1265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  snake: {fileID: 45348043}
+  snake: {fileID: 45348046}
   score: 0
   textMesh: {fileID: 978283260}
 --- !u!4 &1299928671

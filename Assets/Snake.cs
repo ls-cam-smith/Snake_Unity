@@ -100,7 +100,7 @@ public class Snake : MonoBehaviour
         return (x, y);
     }
 
-    private void ResetState() {
+    public void ResetState() {
         foreach (var segment in _segments)
         {
             Destroy(segment.gameObject);
@@ -133,7 +133,6 @@ public class Snake : MonoBehaviour
             case "Obstacle":
                    deathSound.Play();
                 gameState.Stop();
-                ResetState();
                 break;
         }
     }
