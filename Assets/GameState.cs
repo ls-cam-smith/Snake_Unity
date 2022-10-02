@@ -14,6 +14,8 @@ public class GameState : MonoBehaviour
     public GameStates state = GameStates.Stopped;
     public Snake snake;
     public int score = 0;
+    public AudioSource pauseSound;
+    public AudioSource unpauseSound;
 
     public TextMeshProUGUI textMesh;
 
@@ -23,8 +25,10 @@ public class GameState : MonoBehaviour
             state = GameStates.Playing;
         } else if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Playing) {
             state = GameStates.Paused;
+            pauseSound.Play();
         } else if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Paused) {
             state = GameStates.Playing;
+            unpauseSound.Play();
         }
     }
 
