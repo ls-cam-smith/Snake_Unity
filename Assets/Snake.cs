@@ -131,7 +131,7 @@ public class Snake : MonoBehaviour
                 gameState.IncrementScore();
                 break;
             case "Obstacle":
-                   deathSound.Play();
+                deathSound.Play();
                 gameState.Stop();
                 break;
         }

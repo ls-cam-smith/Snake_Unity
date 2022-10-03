@@ -22,7 +22,7 @@ public class GameState : MonoBehaviour
     public void Update() {
         if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Stopped) {
             snake.ResetState();
-            state = GameStates.Playing;
+            Start();
         } else if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Playing) {
             state = GameStates.Paused;
             pauseSound.Play();
@@ -34,6 +34,11 @@ public class GameState : MonoBehaviour
 
     public void Stop() {
         state = GameStates.Stopped;
+    }
+
+    public void Start()
+    {
+        state = GameStates.Playing;
         score = 0;
         textMesh.text = "SCORE: 0";
     }

@@ -23,7 +23,14 @@ public class Food : MonoBehaviour
         );
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        beep.Play();
+        RandomizePosition();
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
         beep.Play();
         RandomizePosition();
     }
