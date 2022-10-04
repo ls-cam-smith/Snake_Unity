@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 45348051}
   m_Layer: 0
   m_Name: Snake
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -285,7 +285,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ab5dd86c17d354aedba2ada3fdd4f88f, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 58d4398a9e4504471a5325bc1e1d80ed, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 0.91
