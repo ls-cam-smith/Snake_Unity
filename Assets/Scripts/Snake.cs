@@ -1,25 +1,49 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static GameState;
 
-
+// TODO, use Vector2 for x, y pairs
 public class Snake : MonoBehaviour
 {
+
+    [SerializeField] private BoxCollider2D gridArea;
+    [SerializeField] private Transform segmentPrefab;
+    [SerializeField] private int initialSize = 4;
+    [SerializeField] private AudioSource deathSound;
+    [SerializeField] private GameState gameState;
+
     private Vector2 _facing = Vector2.right;
     private Queue<Vector2> _input_buffer = new Queue<Vector2>();
     private List<Transform> _segments;
-
-    public BoxCollider2D gridArea;
-    public Transform segmentPrefab;
-    public int initialSize = 4;
-    public AudioSource deathSound;
-    public GameState gameState;
+    private HashSet<Vector2> gridCells;
+    private HashSet<Vector2> occupiedCells;
 
     private void Start() {
         _segments = new List<Transform>();
+        gridCells = new HashSet<Vector2>();
+        occupiedCells = new HashSet<Vector2>();
+        PopulateGridCells();
+        Debug.Log(gridCells.Count);
         ResetState();
+    }
+
+    private void PopulateGridCells()
+    {
+        var gridXMin = (int) gridArea.bounds.min.x;
+        var gridYMin = (int) gridArea.bounds.min.y;
+        var gridXSize = (int) gridArea.bounds.size.x + 1;
+        var gridYSize = (int) gridArea.bounds.size.y + 1;
+
+        foreach (var x in Enumerable.Range(gridXMin, gridXSize))
+        {
+            foreach (var y in Enumerable.Range(gridYMin, gridYSize))
+            {
+                gridCells.Add(new Vector2(x, y));
+            }
+        }
     }
 
     void Update() {
@@ -48,6 +72,7 @@ public class Snake : MonoBehaviour
         }
         Transform nextSegment = Instantiate(this.segmentPrefab);
         nextSegment.transform.position = this.transform.position;
+        occupiedCells.Add((Vector2)this.transform.position);
 
         Vector2 next_facing;
         if (_input_buffer.TryDequeue(out next_facing)) {
@@ -62,9 +87,11 @@ public class Snake : MonoBehaviour
             nextY,
             0
         );
+        occupiedCells.Add((Vector2)transform.position);
 
         _segments.Insert(0, nextSegment);
         var lastSegment = _segments[_segments.Count - 1];
+        occupiedCells.Remove((Vector2)lastSegment.transform.position);
         _segments.RemoveAt(_segments.Count - 1);
         Destroy(lastSegment.gameObject);
     }
@@ -79,6 +106,7 @@ public class Snake : MonoBehaviour
         _segments.Add(segment);
     }
 
+    // Makes sure a given x, y is within the grid using wrap-around logic
     private (float, float) CoerceToGrid(float x, float y)
     {
         if (x < gridArea.bounds.min.x)
@@ -112,6 +140,11 @@ public class Snake : MonoBehaviour
         for (int i = 1; i < initialSize; i++) {
             Grow();
         }
+    }
+
+    public List<Vector2> GetAvailableCells()
+    {
+        return gridCells.Where(i => !occupiedCells.Contains(i)).ToList();
     }
 
     private void OnTriggerEnter2D (Collider2D other)

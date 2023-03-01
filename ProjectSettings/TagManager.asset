@@ -10,6 +10,7 @@ TagManager:
   - WallBottom
   - WallLeft
   - WallRight
+  - Debug
   layers:
   - Default
   - TransparentFX
