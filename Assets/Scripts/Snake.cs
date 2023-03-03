@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-//using static GameState;
 
 public class Snake : MonoBehaviour
 {
@@ -105,6 +104,7 @@ public class Snake : MonoBehaviour
     // Makes sure a given x, y is within the grid using wrap-around logic
     private Vector2 CoerceToGrid(Vector2 coordinates)
     {
+        // Todo, there must be a simpler way...
         var x = coordinates.x;
         var y = coordinates.y;
 
