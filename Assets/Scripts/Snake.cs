@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static GameState;
+//using static GameState;
 
-// TODO, use Vector2 for x, y pairs
 public class Snake : MonoBehaviour
 {
 
@@ -15,19 +14,19 @@ public class Snake : MonoBehaviour
     [SerializeField] private AudioSource deathSound;
     [SerializeField] private GameState gameState;
 
-    private Vector2 _facing = Vector2.right;
-    private Queue<Vector2> _input_buffer = new Queue<Vector2>();
-    private List<Transform> _segments;
-    private HashSet<Vector2> gridCells;
-    private HashSet<Vector2> occupiedCells;
+    private Queue<Vector2> input_buffer = new Queue<Vector2>();
+    private List<Transform> segments = new List<Transform>();
+    private HashSet<Vector2> gridCells = new HashSet<Vector2>();
+    private HashSet<Vector2> occupiedCells = new HashSet<Vector2>();
 
-    private void Start() {
-        _segments = new List<Transform>();
-        gridCells = new HashSet<Vector2>();
-        occupiedCells = new HashSet<Vector2>();
+    private void Awake() {
         PopulateGridCells();
-        Debug.Log(gridCells.Count);
-        ResetState();
+
+        //transform.position = Vector3.zero;
+        for (int i = 1; i < initialSize; i++)
+        {
+            Grow();
+        }
     }
 
     private void PopulateGridCells()
@@ -51,18 +50,19 @@ public class Snake : MonoBehaviour
         {
             return;
         }
+        var facing = (Vector2) transform.up;
 
-        if (Input.GetKeyDown (KeyCode.UpArrow) && _facing != Vector2.down) {
-            _input_buffer.Enqueue(Vector2.up);
+        if (Input.GetKeyDown (KeyCode.UpArrow) && facing != Vector2.down) {
+            input_buffer.Enqueue(Vector2.up);
         }
-        if (Input.GetKeyDown (KeyCode.DownArrow) && _facing != Vector2.up) {
-            _input_buffer.Enqueue(Vector2.down);
+        if (Input.GetKeyDown (KeyCode.DownArrow) && facing != Vector2.up) {
+            input_buffer.Enqueue(Vector2.down);
         }
-        if (Input.GetKeyDown (KeyCode.LeftArrow) && _facing != Vector2.right) {
-            _input_buffer.Enqueue(Vector2.left);
+        if (Input.GetKeyDown (KeyCode.LeftArrow) && facing != Vector2.right) {
+            input_buffer.Enqueue(Vector2.left);
         }
-        if (Input.GetKeyDown (KeyCode.RightArrow) && _facing != Vector2.left) {
-            _input_buffer.Enqueue(Vector2.right);
+        if (Input.GetKeyDown (KeyCode.RightArrow) && facing != Vector2.left) {
+            input_buffer.Enqueue(Vector2.right);
         }
     }
 
@@ -70,80 +70,67 @@ public class Snake : MonoBehaviour
         if (gameState.state != GameStates.Playing){
             return;
         }
-        Transform nextSegment = Instantiate(this.segmentPrefab);
-        nextSegment.transform.position = this.transform.position;
-        occupiedCells.Add((Vector2)this.transform.position);
-
-        Vector2 next_facing;
-        if (_input_buffer.TryDequeue(out next_facing)) {
-            _facing = next_facing;
+        // Try to turn
+        Vector2 nextDirection;
+        if (input_buffer.TryDequeue(out nextDirection)) {
+            // Rotate to face the dequeued input direction
+            transform.up = nextDirection;
         }
-        float nextX = Mathf.Round(this.transform.position.x) + _facing.x;
-        float nextY = Mathf.Round(this.transform.position.y) + _facing.y;
-        (nextX, nextY) = CoerceToGrid(nextX, nextY);
 
-        transform.position = new Vector3(
-            nextX,
-            nextY,
-            0
+        // Prepare and place cell underneath the head before we move
+        Transform nextSegment = Instantiate(segmentPrefab);
+        nextSegment.transform.position = transform.position;
+        occupiedCells.Add(transform.position);
+        segments.Insert(0, nextSegment);
+
+        // Move the head
+        transform.position = Vector3Int.RoundToInt(
+            CoerceToGrid(transform.position + transform.up)
         );
-        occupiedCells.Add((Vector2)transform.position);
 
-        _segments.Insert(0, nextSegment);
-        var lastSegment = _segments[_segments.Count - 1];
-        occupiedCells.Remove((Vector2)lastSegment.transform.position);
-        _segments.RemoveAt(_segments.Count - 1);
+        // Remove the tail segment
+        var lastSegment = segments.Last();
+        occupiedCells.Remove(lastSegment.transform.position);
+        segments.Remove(lastSegment);
         Destroy(lastSegment.gameObject);
     }
 
     private void Grow() {
         Transform segment = Instantiate(this.segmentPrefab);
-        if (_segments.Count > 0) {
-            segment.position = _segments[_segments.Count - 1].position;
-        } else {
-            segment.position = this.transform.position;
-        }
-        _segments.Add(segment);
+        // Place the segment behind the head, always in a safe 'hidden' position
+        segment.position = transform.position - transform.up;
+        segments.Add(segment);
     }
 
     // Makes sure a given x, y is within the grid using wrap-around logic
-    private (float, float) CoerceToGrid(float x, float y)
+    private Vector2 CoerceToGrid(Vector2 coordinates)
     {
+        var x = coordinates.x;
+        var y = coordinates.y;
+
         if (x < gridArea.bounds.min.x)
         {
-            x = Mathf.Floor(gridArea.bounds.max.x);
+            x = gridArea.bounds.max.x;
         }
-        if (gridArea.bounds.max.x < x)
+        else if (gridArea.bounds.max.x < x)
         {
-            x = Mathf.Floor(gridArea.bounds.min.x);
+            x = gridArea.bounds.min.x;
         }
+
         if (y < gridArea.bounds.min.y)
         {
-            y = Mathf.Floor(gridArea.bounds.max.y);
+            y = gridArea.bounds.max.y;
         }
-        if (gridArea.bounds.max.y < y)
+        else if (gridArea.bounds.max.y < y)
         {
-            y = Mathf.Floor(gridArea.bounds.min.y);
+            y = gridArea.bounds.min.y;
         }
-        return (x, y);
-    }
-
-    public void ResetState() {
-        foreach (var segment in _segments)
-        {
-            Destroy(segment.gameObject);
-        }
-        _segments.Clear();
-        _input_buffer.Clear();
-
-        transform.position = Vector3.zero;
-        for (int i = 1; i < initialSize; i++) {
-            Grow();
-        }
+        return new Vector2(x, y);
     }
 
     public List<Vector2> GetAvailableCells()
     {
+        if (occupiedCells.Count == 0) { return gridCells.ToList(); };
         return gridCells.Where(i => !occupiedCells.Contains(i)).ToList();
     }
 
@@ -154,7 +141,7 @@ public class Snake : MonoBehaviour
             return;
         }
 
-            switch (other.tag)
+        switch (other.tag)
         {
             default:
                 break;

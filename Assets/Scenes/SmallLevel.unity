@@ -182,8 +182,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1715555455
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 81e31ca21a2f24bdaa644879e6e597dd, type: 3}
   m_Color: {r: 0.3473892, g: 0.9622642, b: 0.14070843, a: 1}
@@ -204,7 +204,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 45348043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 4, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridArea: {fileID: 1526832835}
   segmentPrefab: {fileID: 1838914786182848494, guid: 858c2a8956c204959970745342bfbeb5, type: 3}
-  initialSize: 4
+  initialSize: 2
   deathSound: {fileID: 45348051}
   gameState: {fileID: 1299928670}
 --- !u!61 &45348049
@@ -779,6 +779,14 @@ PrefabInstance:
     - target: {fileID: 2957739991158894900, guid: 6ea2be6d0fc3146588a885d47d433f6c, type: 3}
       propertyPath: m_Name
       value: Environment_Small
+      objectReference: {fileID: 0}
+    - target: {fileID: 2957739991353856478, guid: 6ea2be6d0fc3146588a885d47d433f6c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2957739991353856478, guid: 6ea2be6d0fc3146588a885d47d433f6c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2957739991462882648, guid: 6ea2be6d0fc3146588a885d47d433f6c, type: 3}
       propertyPath: m_LocalScale.x

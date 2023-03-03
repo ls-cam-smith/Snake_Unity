@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public enum GameStates {
@@ -21,7 +22,7 @@ public class GameState : MonoBehaviour
 
     public void Update() {
         if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Stopped) {
-            snake.ResetState();
+            RestartScene();
             Start();
         } else if (Input.GetKeyDown(KeyCode.Space) && state == GameStates.Playing) {
             state = GameStates.Paused;
@@ -30,6 +31,11 @@ public class GameState : MonoBehaviour
             state = GameStates.Playing;
             unpauseSound.Play();
         }
+    }
+
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Stop() {
