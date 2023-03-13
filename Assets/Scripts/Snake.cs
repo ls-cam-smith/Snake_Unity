@@ -21,7 +21,6 @@ public class Snake : MonoBehaviour
     private void Awake() {
         PopulateGridCells();
 
-        //transform.position = Vector3.zero;
         for (int i = 1; i < initialSize; i++)
         {
             Grow();
@@ -69,6 +68,7 @@ public class Snake : MonoBehaviour
         if (gameState.state != GameStates.Playing){
             return;
         }
+
         // Try to turn
         Vector2 nextDirection;
         if (input_buffer.TryDequeue(out nextDirection)) {
