@@ -86,6 +86,7 @@ public class Snake : MonoBehaviour
         transform.position = Vector3Int.RoundToInt(
             CoerceToGrid(transform.position + transform.up)
         );
+        occupiedCells.Add(transform.position);
 
         // Remove the tail segment
         var lastSegment = segments.Last();
